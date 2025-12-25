@@ -3,14 +3,19 @@
 *Python · FastAPI · JSON · HTML · JavaScript*
 
 ### Installation du moteur:
-git clone mysterax
+git clone https://github.com/bochatay/mysterax.git
+
 python -m venv .venv
+
 source .venv/bin/activate
+
 pip install -r requirements.txt
 
 ### Installation de jeux:
 cd games
-git clone nom_du_jeu
+
+Exemple: git clone https://github.com/bochatay/mysterax_maison_abandonnee.git
+
 
 ### Lancement:
 uvicorn server.app:app --reload
