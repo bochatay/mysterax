@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des jeux</title>
+    <link rel="stylesheet" href="/static/css/jeux.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Bienvenue sur Mysterax</h1>
+            <p>Choisissez un jeu parmi les suivants :</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="game-list">
+            {% if games %}
+                {% for game_data in games %}
+                    <div class="game-card">
+                        <!-- Si l'image du jeu existe, affiche-la -->
+                        <div class="game-image">
+                            <img src="/games/{{ game_data.game }}/media/preview.jpg" alt="{{ game_data.name }} - Aperçu" class="game-thumbnail">
+                        </div>
+                        <div class="game-info">
+                            <h2>{{ game_data.name }}</h2>
+                            <a href="/games/{{ game_data.game }}" class="play-button">Jouer à {{ game_data.name }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun jeu disponible.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Mysterax. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

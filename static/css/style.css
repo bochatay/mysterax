@@ -1,0 +1,189 @@
+body {
+    background: #111;
+    color: #eee;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#game-container {
+    width: 968px;
+    margin: 0 auto;
+    position: relative;
+    padding-top: 20px;
+}
+
+#room-container {
+    position: relative;
+    width: 968px;
+    height: 752px;
+    margin: auto;
+    border: 3px solid #555;
+    background: #000;
+}
+
+#room-container img {
+    width: 968px;
+    height: 752px;
+    display: block;
+}
+
+.zone {
+    position: absolute;
+    cursor: pointer;
+}
+
+.zone:hover {
+    outline: 2px dotted #d7c800; /* Pointillé noir de 2px */
+    border-radius: 8px; /* Coins arrondis */
+}
+
+#inventory {
+    position: absolute;
+    margin-top: 10px;
+    background: #222;
+    padding: 15px;
+    border: 2px solid #444;
+    width: 120px;
+    left:-158px;
+    top:10px;
+    /*margin-left: auto;
+    margin-right: auto;*/
+}
+
+#inventory h3 {
+    margin-top: 0;
+}
+
+#message {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 768px;
+    padding: 20px;
+
+    background: #333;
+    border: 2px solid #555;
+    color: white;
+
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+    cursor: pointer;
+
+    display: flex;
+    align-items: flex-end; /* ← aligne le X en bas */
+    gap: 20px;
+
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+#image_message {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#contenu_message {
+    flex: 1;
+    align-self: center; /* texte centré verticalement */
+    text-align: left;
+    font-size: 2em;
+}
+
+#icone_message {
+    font-size: 2em;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+#icone_message.hidden, #image_message.hidden {
+    display:none;
+}
+
+
+#message.msghidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#image-container.hidden {
+    display: none;  /* Cacher l'élément par défaut */
+}
+
+#image-container,#input-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;  /* Mettre l'image au-dessus des autres éléments */
+    background-color: rgba(0, 0, 0, 0.7);  /* Fond semi-transparent */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+#image-container img ,#input-container img {
+    max-width: 100%;  /* L'image s'adapte à la largeur de l'écran */
+    max-height: 80vh; /* L'image ne dépasse pas 80% de la hauteur de la fenêtre */
+    cursor: pointer;
+}
+
+/* Cacher l'overlay par défaut */
+#game-overlay.hidden {
+    display: none;
+}
+
+/* L'overlay bloque les clics dans #room-container */
+#game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);  /* Fond semi-transparent */
+    z-index: 999;  /* Assurer qu'il soit au-dessus du contenu de la pièce */
+}
+
+.inventory-item-image {
+    cursor:pointer; 
+    padding-left:12px;
+}
+
+.delete-icon {
+    cursor:pointer;
+    padding-left:20px;
+    vertical-align:20px;
+}
+
+#user-input {
+    background-color: transparent; 
+    border: none; 
+    font-size: 24px; 
+    color: #000; 
+    padding: 5px; 
+    font-family: monospace;
+    outline: none; 
+    width:230px;
+}
+
+#submit-button {
+    background-color: transparent; 
+    border: none;
+    font-size: 18px; 
+    color: #000; 
+    padding: 5px; 
+    font-family: monospace;
+    outline: none; 
+    width:140px;
+    border-radius: 12px;
+}
