@@ -100,14 +100,16 @@ function clearZones() {
 // Envoi d’un clic "objet de l'inventaire" au serveur
 // -------------------------------------------------------------
 function clickObject(objet, media) {
-    fetch("/api/clickObject", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ object_id: objet.id,media_id: media ? media.id : null,media_version:media ? media.version : null })
-    })
-    .then(r => r.json())
-    .then(handleEvent)
-    .catch(err => showMessage("Erreur action : " + err));
+    if (!currentPhrases){
+        fetch("/api/clickObject", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ object_id: objet.id,media_id: media ? media.id : null,media_version:media ? media.version : null })
+        })
+        .then(r => r.json())
+        .then(handleEvent)
+        .catch(err => showMessage("Erreur action : " + err));
+    }
 }
 
 // -------------------------------------------------------------
@@ -462,6 +464,7 @@ function handleMessageClick() {
             showMessage(currentPhrases[currentPhraseIndex]["message"],"phrase",0,((currentPhraseIndex+1 == currentPhrases.length) ? "✖" : "⇒"),currentPhrases[currentPhraseIndex]["image"]);
         } else {
             gameOverlay.classList.add('hidden');
+            currentPhrases = false
         }
     }
 }

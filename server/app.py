@@ -26,9 +26,6 @@ print("Mode debug") if settings.debug else print("Mode normal")
 
 templates = Jinja2Templates(directory="templates")
 
-# Charger les données du jeu au démarrage
-#game_data = GameData("server/data")
-
 # Servir le frontend
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -37,7 +34,7 @@ games_directory = "games"
 for game in os.listdir(games_directory):
     game_path = os.path.join(games_directory, game)
     if os.path.isdir(game_path):
-        # Montée des fichiers statiques spécifiques à chaque jeu
+        # Monter les fichiers statiques spécifiques à chaque jeu
         static_directory = os.path.join(game_path, "media")
         if os.path.exists(static_directory):
             app.mount(f"/games/{game}/media", StaticFiles(directory=static_directory), name=f"{game}_static")
@@ -57,12 +54,10 @@ async def get_game(request: Request, game_name: str):
 
     if os.path.exists(game_template_path):
         # Si le template spécifique au jeu existe, utiliser ce répertoire
-        print(f"Template spécifique pour {game_name} trouvé, utilisation de {game_template_path}")
         env = Environment(loader=FileSystemLoader(game_templates_dir))
         template = env.get_template("index.html")
     else:
         # Si le template spécifique n'existe pas, utiliser le template global
-        print("Template spécifique introuvable, utilisation du template global")
         env = Environment(loader=FileSystemLoader("templates"))
         template = env.get_template("index.html")
 
@@ -87,47 +82,6 @@ async def get_game(request: Request, game_name: str):
     response = HTMLResponse(content=html_content)
     response.set_cookie("session_id", session_id)
     return response
-'''
-@app.get("/1")
-async def get_home(request: Request):
-    session_id = request.cookies.get("session_id")
-
-    # Si aucune session, créer une nouvelle session
-    if not session_id or session_id not in player_states:
-        session_id = str(uuid.uuid4())  # Générer un ID de session unique
-        # Créer une nouvelle instance de GameState pour le joueur
-        player_states[session_id] = GameState(
-            start_room=game_data.start_room,
-            bools_data=game_data.bools.copy(),
-            input_data=game_data.inputs.copy()
-        )
-
-        # Initialiser le mode debug selon le fichier .env
-        debug_mode = settings.debug  # Cela provient de ton fichier .env
-
-        # Sauvegarder dans un cookie si debug est activé
-        response = templates.TemplateResponse("index.html", {
-            "request": request,
-            "css_debug": "<link rel='stylesheet' href='/static/css/style_debug.css'>" if debug_mode else "",
-            "style_coordinates": "" if debug_mode else "display:none;"
-        })
-        response.set_cookie("session_id", session_id)  # Stocke l'ID de session dans le cookie
-        response.set_cookie("debug_mode", "true" if debug_mode else "false")  # Sauvegarde le mode debug dans le cookie
-        return response
-
-    # Si la session existe déjà, récupérer le mode debug du cookie
-    debug_mode = request.cookies.get("debug_mode", "false") == "true"
-
-    # Mettre à jour les variables CSS en fonction du mode debug
-    css_debug = "<link rel='stylesheet' href='/static/css/style_debug.css'>" if debug_mode else ""
-    style_coordinates = "" if debug_mode else "display:none;"
-
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "css_debug": css_debug,
-        "style_coordinates": style_coordinates
-    })
-'''
 
 @app.get("/api/state")
 async def get_state(request: Request):

@@ -9,12 +9,8 @@ def select_version(versions_dict, current_bools, current_inventory, current_inpu
     default_key = None
     default_version = None
 
-    print(current_bools)
-    print(current_inputs)
     for version_key, version in versions_dict.items():
         conditions = version.get("condition", {})
-        print("version room" , version_key)
-        print(conditions)
 
         # --- Version par défaut (sans condition) ---
         if not conditions:
@@ -49,8 +45,6 @@ def select_version(versions_dict, current_bools, current_inventory, current_inpu
             current_inputs.get(input_id) == required_state
             for input_id, required_state in required_inputs.items()
         )
-        
-        print(bools_ok,objects_ok,inputs_ok)
 
         # --- Toutes les conditions doivent être vraies ---
         if bools_ok and objects_ok and inputs_ok:

@@ -1,4 +1,3 @@
-from .conditions import check_condition
 from .utils import select_version
 MAX_INVENTORY_SIZE = 5
 
@@ -38,9 +37,6 @@ def process_click_object(object_id, media_id, media_version, game_state, game_da
     return {"event": "no_event"}
 
 def process_click(zone_id, game_state, game_data):
-    
-    print(zone_id+" clic")
-
     room = game_data.rooms[game_state.current_room_id][game_state.current_room_version]
     zones = room["zones"]
     zone = next((z for z in zones if z["id"] == zone_id), None)
@@ -48,8 +44,8 @@ def process_click(zone_id, game_state, game_data):
         return {"error": "invalid_zone"}
 
     # Vérifier conditions
-    if not check_condition(game_state, zone.get("condition")):
-        return {"event": "blocked", "zone": zone_id}
+    #if not check_condition(game_state, zone.get("condition")):
+    #    return {"event": "blocked", "zone": zone_id}
 
     ztype = zone["type"]
 
