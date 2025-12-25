@@ -1,0 +1,26 @@
+# Ignore tout le contenu du répertoire 'games'
+games/*
+
+# Mais garde la présence du répertoire 'games'
+!games/.gitkeep
+
+# Ignorer l'environnement virtuel
+.venv/
+
+# Ignorer les fichiers compilés Python
+__pycache__/
+
+# Ignorer les fichiers et répertoires de l'environnement virtuel
+*.pyc
+*.pyo
+
+# Ignorer les outils de IDE, éditeurs de texte (si applicable)
+.vscode/
+.idea/
+
+# Ignorer les fichiers de logs
+*.log
+
+# Ignorer les fichiers d'OS (macOS, Windows, etc.)
+.DS_Store
+Thumbs.db
