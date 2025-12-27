@@ -2,6 +2,11 @@
 ## Moteur de jeu d’énigmes – Point & Click
 *Python · FastAPI · JSON · HTML · JavaScript*
 
+## License
+
+License MIT.
+Voir le fichier LICENSE pour plus de détails
+
 ### Installation du moteur:
 git clone https://github.com/bochatay/mysterax.git
 
