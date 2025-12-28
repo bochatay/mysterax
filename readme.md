@@ -67,6 +67,7 @@ des aventures narratives
 des puzzles multi-étapes
 
 ### Architecture du projet
+```text
 project/
 ├── server/
 │ ├── app.py
@@ -104,7 +105,7 @@ project/
 │     └── style.css   
 ├── templates/
     └── index.html
-
+```
 
 ### Rooms (`rooms.json`)
 
