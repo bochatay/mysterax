@@ -2,6 +2,7 @@
 ## Moteur de jeu d’énigmes – Point & Click
 *Python · FastAPI · JSON · HTML · JavaScript*
 
+[Cuisine du jeu Arc-en ciel en Valais utilisant le moteur Mysterax](static/im1.jpg)
 ## License
 
 License MIT.
@@ -73,11 +74,10 @@ project/
 │ ├── app.py
 │ ├── game_engine/
 │   ├── actions.py
-│   ├── conditions.py
 │   ├── loader.py
 │   ├── state.py
 │   └── utils.py
-├── games/    <- Les jeux sont ajoutés dans ce répertoire
+├── games/ <- Les jeux sont ajoutés dans ce répertoire
 │   ├── nom_du_jeu_1
 │   │ ├── json
 │   │ | ├── game.json
