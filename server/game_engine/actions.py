@@ -1,4 +1,4 @@
-from .utils import select_version
+from .utils import get_room_version
 MAX_INVENTORY_SIZE = 5
 
 
@@ -16,7 +16,7 @@ def delete_object(object_id, game_state, game_data):
 def handle_object_click(object_id, media_id, media_version, game_state, game_data):
     #Voyons si le media a une action existante.
     if (media_id) :
-        media_version, media_data = select_version(game_data.media[media_id], game_state.bools, game_state.inventory, game_state.inputs)
+        media_version, media_data = get_room_version(game_data.media[media_id], game_state.bools, game_state.inventory, game_state.inputs)
         if ("action" in media_data) :
             if (media_data["action"]["object"] == object_id) :
                 bool_id = media_data["action"]["bool"]
@@ -67,7 +67,7 @@ def handle_zone_click(zone_id, game_state, game_data):
                 }
 
         # Sélectionne la bonne version de la salle en fonction de l'état des bools
-        current_room_version, current_room_data = select_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
+        current_room_version, current_room_data = get_room_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
 
         if (not current_room_data) :
             return {
@@ -144,7 +144,7 @@ def handle_zone_click(zone_id, game_state, game_data):
             return {"event": "missing_bool", "message": "Bool not found in game state."}
     
     if zone_type == "media":
-        media_version, media = select_version(game_data.media[zone["media_id"]], game_state.bools, game_state.inventory, game_state.inputs)
+        media_version, media = get_room_version(game_data.media[zone["media_id"]], game_state.bools, game_state.inventory, game_state.inputs)
         media["id"] = zone["media_id"]
         media["version"] = media_version
         return {"event": "show_media", "media": media}
@@ -171,7 +171,7 @@ def test_puzzle_solution(input_id, valeur, game_state, game_data) :
     if (valeur in puzzle_input["solutions"]) :
         game_state.inputs[input_id] = True
         target_room_all_data = game_data.rooms[puzzle_input['success_room']]
-        current_room_version, current_room_data = select_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
+        current_room_version, current_room_data = get_room_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
         game_state.current_room_id = puzzle_input['success_room']
         game_state.current_room_version = current_room_version
         # Retourne la version correspondante de la salle avec l'image et la description correctes
