@@ -74,8 +74,8 @@ body {
 /* Positionner l'inventaire par rapport au room-container */
 #room-container #inventory {
     position: absolute;
-    left: 10px;
-    top: 30px;
+    left: 5px;
+    top: 5px;
 }
 
 #inventory h3 {
