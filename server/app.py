@@ -122,9 +122,9 @@ async def get_state(request: Request):
         "zones": current_room_data.get("zones", []),
         "phrases": phrases,
         "game": {
-            "name": game_data.name,
+            "name": game_data.config.get("name", "Jeu sans nom"),
             "start_room": game_data.start_room,
-            "dimensions": getattr(game_data, 'dimensions', None)
+            "dimensions": game_data.config.get("dimensions", None)
         }
     }
 
