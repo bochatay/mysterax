@@ -4,9 +4,12 @@ let currentMedia = null;
 let currentPhrases = null;
 let currentPhraseIndex = 0;
 let messageTimeout = null;
+let gameTime = 0;
+let gameTimeInterval = null;
 
 window.onload = () => {
     loadState();
+    startGameTimer();
 };
 
 // -------------------------------------------------------------
@@ -403,6 +406,44 @@ function updateInventory(items) {
 
 }
 
+// Ajout de la fonction pour basculer l'inventaire
+function toggleInventory() {
+    const inventory = document.getElementById("inventory");
+    const inventoryList = document.getElementById("inventory-list");
+    const inventoryToggle = document.getElementById("inventory-toggle");
+    
+    // Vérifier si l'inventaire est actuellement visible
+    if (inventoryList.style.display === "none" || inventoryList.style.display === "") {
+        // Rendre l'inventaire visible
+        inventoryList.style.display = "block";
+        // Changer la flèche pour pointer vers le haut (en inversant les bordures)
+        inventoryToggle.style.borderTop = "5px solid #fff";
+        inventoryToggle.style.borderBottom = "0";
+        inventoryToggle.style.borderLeft = "5px solid transparent";
+        inventoryToggle.style.borderRight = "5px solid transparent";
+        inventoryToggle.style.marginLeft = "5px";
+        inventoryToggle.style.marginTop = "3px";
+    } else {
+        // Cacher l'inventaire
+        inventoryList.style.display = "none";
+        // Changer la flèche pour pointer vers la droite
+        inventoryToggle.style.borderTop = "5px solid transparent";
+        inventoryToggle.style.borderBottom = "5px solid transparent";
+        inventoryToggle.style.borderLeft = "5px solid #fff";
+        inventoryToggle.style.marginLeft = "5px";
+        inventoryToggle.style.marginTop = "3px";
+        inventoryToggle.style.borderRight = "0";
+    }
+}
+
+// Ajouter l'événement de clic uniquement sur le titre de l'inventaire
+document.getElementById("inventory").addEventListener("click", function(event) {
+    // Vérifier si le clic a été effectué sur le titre "Inventaire" ou sur le contenu
+    if (event.target.tagName === 'H3' || event.target === this) {
+        toggleInventory();
+    }
+});
+
 // -------------------------------------------------------------
 // Messages
 // -------------------------------------------------------------
@@ -491,4 +532,25 @@ function updateCoordinates(event) {
     coordinatesDiv.style.left = `${event.clientX + 10}px`;
     coordinatesDiv.style.top = `${event.clientY + 10}px`;
 }
+function startGameTimer() {
+    // Vérifier si le timer est déjà démarré
+    if (gameTimeInterval) {
+        return;
+    }
+    
+    gameTimeInterval = setInterval(() => {
+        gameTime++;
+        updateTimerDisplay();
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(gameTime / 60);
+    const seconds = gameTime % 60;
+    const timerElement = document.getElementById('timer');
+    if (timerElement) {
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+}
+
 document.getElementById('room-image').addEventListener('mousemove', updateCoordinates);

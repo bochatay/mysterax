@@ -1,4 +1,4 @@
-from .utils import select_version
+from .utils import get_room_version
 MAX_INVENTORY_SIZE = 5
 
 
@@ -7,21 +7,21 @@ def delete_object(object_id, game_state, game_data):
     if object_id in game_state.inventory:
         # Supprime l'object_id du set
         game_state.inventory.remove(object_id)
-        object = game_data.objects[object_id]["name"]
-        return {"event": "deleted_object", "message": {"message":f"Objet {object} déposé.","image":False}}
+        object_name = game_data.objects[object_id]["name"]
+        return {"event": "deleted_object", "message": {"message":f"Objet {object_name} déposé.","image":False}}
     else:
         # Si l'objet n'est pas trouvé dans l'inventaire
         return {"event": "error", "message": {"message":f"Object {object_id} not found in inventory.","image":False}}
 
-def process_click_object(object_id, media_id, media_version, game_state, game_data):
+def handle_object_click(object_id, media_id, media_version, game_state, game_data):
     #Voyons si le media a une action existante.
     if (media_id) :
-        media_version, media_data = select_version(game_data.media[media_id], game_state.bools, game_state.inventory, game_state.inputs)
+        media_version, media_data = get_room_version(game_data.media[media_id], game_state.bools, game_state.inventory, game_state.inputs)
         if ("action" in media_data) :
             if (media_data["action"]["object"] == object_id) :
                 bool_id = media_data["action"]["bool"]
                 bool_data = game_data.bools.get(bool_id)
-                current_status = game_state.bools[bool_id]
+                previous_status = game_state.bools[bool_id]
                 game_state.bools[bool_id] = media_data["action"]["status"]
                 message = media_data["action"].get("message")
                 if (not message):
@@ -36,7 +36,7 @@ def process_click_object(object_id, media_id, media_version, game_state, game_da
         return {"event": "message", "message": message}
     return {"event": "no_event"}
 
-def process_click(zone_id, game_state, game_data):
+def handle_zone_click(zone_id, game_state, game_data):
     room = game_data.rooms[game_state.current_room_id][game_state.current_room_version]
     zones = room["zones"]
     zone = next((z for z in zones if z["id"] == zone_id), None)
@@ -47,10 +47,10 @@ def process_click(zone_id, game_state, game_data):
     #if not check_condition(game_state, zone.get("condition")):
     #    return {"event": "blocked", "zone": zone_id}
 
-    ztype = zone["type"]
+    zone_type = zone["type"]
 
     # --- Déplacement ---
-    if ztype == "move":
+    if zone_type == "move":
         target_room_id = zone["target_room"]
         target_room_all_data = game_data.rooms[target_room_id]
         requires_objects = zone.get("requires_objects")
@@ -67,7 +67,7 @@ def process_click(zone_id, game_state, game_data):
                 }
 
         # Sélectionne la bonne version de la salle en fonction de l'état des bools
-        current_room_version, current_room_data = select_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
+        current_room_version, current_room_data = get_room_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
 
         if (not current_room_data) :
             return {
@@ -85,7 +85,7 @@ def process_click(zone_id, game_state, game_data):
         }
 
     # --- Prise d'objet ---
-    if ztype == "object":
+    if zone_type == "object":
         obj_id = zone["object_id"]
         if obj_id in game_state.inventory:
             return {"event": "already_picked"}
@@ -96,7 +96,7 @@ def process_click(zone_id, game_state, game_data):
 
     
     # --- Gestion des bools ---
-    if ztype == "bool":
+    if zone_type == "bool":
         bool_id = zone["bool_id"]
         bool_data = game_data.bools.get(bool_id)
 
@@ -143,18 +143,18 @@ def process_click(zone_id, game_state, game_data):
         else:
             return {"event": "missing_bool", "message": "Bool not found in game state."}
     
-    if ztype == "media":
-        media_version, media = select_version(game_data.media[zone["media_id"]], game_state.bools, game_state.inventory, game_state.inputs)
+    if zone_type == "media":
+        media_version, media = get_room_version(game_data.media[zone["media_id"]], game_state.bools, game_state.inventory, game_state.inputs)
         media["id"] = zone["media_id"]
         media["version"] = media_version
         return {"event": "show_media", "media": media}
 
-    if ztype == "input":
+    if zone_type == "input":
         input = game_data.inputs[zone["input_id"]]
         input["id"] = zone["input_id"]
         return {"event": "show_input", "input": input}
     
-    if ztype == "reset":
+    if zone_type == "reset":
         # Réinitialiser l'état du joueur
         game_state.reset(
             start_room=game_data.start_room,
@@ -166,13 +166,13 @@ def process_click(zone_id, game_state, game_data):
     # Aucune action reconnue
     return {"event": "no_action", "message": "No action performed."}
 
-def testEnigme(input_id, valeur, game_state, game_data) :
-    input = game_data.inputs[input_id]
-    if (valeur in input["solutions"]) :
+def test_puzzle_solution(input_id, valeur, game_state, game_data) :
+    puzzle_input = game_data.inputs[input_id]
+    if (valeur in puzzle_input["solutions"]) :
         game_state.inputs[input_id] = True
-        target_room_all_data = game_data.rooms[input['success_room']]
-        current_room_version, current_room_data = select_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
-        game_state.current_room_id = input['success_room']
+        target_room_all_data = game_data.rooms[puzzle_input['success_room']]
+        current_room_version, current_room_data = get_room_version(target_room_all_data, game_state.bools, game_state.inventory, game_state.inputs)
+        game_state.current_room_id = puzzle_input['success_room']
         game_state.current_room_version = current_room_version
         # Retourne la version correspondante de la salle avec l'image et la description correctes
         return {
@@ -180,8 +180,8 @@ def testEnigme(input_id, valeur, game_state, game_data) :
             "text":current_room_data.get("text")
         }
     else :
-        message = input.get("indice", {"message":"La réponse est fausse","image":"narrateur.png"})
+        message = puzzle_input.get("indice", {"message":"La réponse est fausse","image":"narrateur.png"})
         return {
             "event": "missing_condition",
             "message": message
-        } 
+        }

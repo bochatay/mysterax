@@ -10,15 +10,15 @@ from fastapi.responses import JSONResponse, HTMLResponse
 
 from server.game_engine.loader import GameData
 from server.game_engine.state import GameState
-from server.game_engine.actions import process_click, delete_object, process_click_object, testEnigme
-from server.game_engine.utils import select_version
+from server.game_engine.actions import handle_zone_click, delete_object, handle_object_click, test_puzzle_solution
+from server.game_engine.utils import get_room_version
 
 from jinja2 import FileSystemLoader, Environment
 from config import settings
 
 # Dictionnaire pour stocker l'état du jeu par session
-player_states = {}
-player_game = {}
+game_sessions = {}
+game_data_storage = {}
 
 app = FastAPI()
 
@@ -62,14 +62,14 @@ async def get_game(request: Request, game_name: str):
         template = env.get_template("index.html")
 
     session_id = request.cookies.get("session_id")
-    if not session_id or session_id not in player_states:
+    if not session_id or session_id not in game_sessions:
         session_id = str(uuid.uuid4())  # Générer un ID de session unique
-        player_states[session_id] = GameState(
+        game_sessions[session_id] = GameState(
             start_room=game_data.start_room,
             bools_data=game_data.bools.copy(),
             input_data=game_data.inputs.copy()
         )
-    player_game[session_id] = game_data
+    game_data_storage[session_id] = game_data
     debug_mode = settings.debug
     html_content = template.render(
         request=request,
@@ -86,14 +86,14 @@ async def get_game(request: Request, game_name: str):
 @app.get("/api/state")
 async def get_state(request: Request):
     session_id = request.cookies.get("session_id")
-    if not session_id or session_id not in player_states:
+    if not session_id or session_id not in game_sessions:
         return JSONResponse({"error": "Session non trouvée"}, status_code=400)
 
-    game_state = player_states[session_id]
-    game_data = player_game.get(session_id)
+    game_state = game_sessions[session_id]
+    game_data = game_data_storage.get(session_id)
 
     # Sélectionner la version de la salle et récupérer les phrases
-    current_room_version, current_room_data = select_version(
+    current_room_version, current_room_data = get_room_version(
         game_data.rooms[game_state.current_room_id],
         game_state.bools,
         game_state.inventory,
@@ -126,36 +126,36 @@ async def get_state(request: Request):
 @app.post("/api/testEnigme")
 async def test_enigme(request: Request):
     session_id = request.cookies.get("session_id")
-    if not session_id or session_id not in player_states:
+    if not session_id or session_id not in game_sessions:
         return JSONResponse({"error": "Session non trouvée"}, status_code=400)
 
     data = await request.json()
     input_id = data.get("input_id")
     valeur = data.get("valeur")
 
-    game_state = player_states[session_id]
-    game_data = player_game.get(session_id)
+    game_state = game_sessions[session_id]
+    game_data = game_data_storage.get(session_id)
     
-    result = testEnigme(input_id, valeur, game_state, game_data)
+    result = test_puzzle_solution(input_id, valeur, game_state, game_data)
     return JSONResponse(result)
 
 @app.post("/api/click")
 async def click_action(request: Request):
     session_id = request.cookies.get("session_id")
-    if not session_id or session_id not in player_states:
+    if not session_id or session_id not in game_sessions:
         return JSONResponse({"error": "Session non trouvée"}, status_code=400)
 
     data = await request.json()
     zone_id = data.get("zone_id")
 
-    game_state = player_states[session_id]
-    game_data = player_game.get(session_id)
+    game_state = game_sessions[session_id]
+    game_data = game_data_storage.get(session_id)
 
-    result = process_click(zone_id, game_state, game_data)
+    result = handle_zone_click(zone_id, game_state, game_data)
 
     if result.get("event") == "game_reset":
         # Réinitialiser la session et renvoyer la page de jeu initiale
-        player_states[session_id] = GameState(
+        game_sessions[session_id] = GameState(
             start_room=game_data.start_room,
             bools_data=game_data.bools.copy(),
             input_data=game_data.inputs.copy()
@@ -169,7 +169,7 @@ async def click_action(request: Request):
 @app.post("/api/clickObject")
 async def click_object(request: Request):
     session_id = request.cookies.get("session_id")
-    if not session_id or session_id not in player_states:
+    if not session_id or session_id not in game_sessions:
         return JSONResponse({"error": "Session non trouvée"}, status_code=400)
 
     data = await request.json()
@@ -177,23 +177,23 @@ async def click_object(request: Request):
     media_id = data.get("media_id")
     media_version = data.get("media_version")
 
-    game_state = player_states[session_id]
-    game_data = player_game.get(session_id)
+    game_state = game_sessions[session_id]
+    game_data = game_data_storage.get(session_id)
 
-    result = process_click_object(object_id, media_id, media_version, game_state, game_data)
+    result = handle_object_click(object_id, media_id, media_version, game_state, game_data)
     return JSONResponse(result)
 
 @app.post("/api/deposeObjet")
 async def del_object(request: Request):
     session_id = request.cookies.get("session_id")
-    if not session_id or session_id not in player_states:
+    if not session_id or session_id not in game_sessions:
         return JSONResponse({"error": "Session non trouvée"}, status_code=400)
 
     data = await request.json()
     object_id = data.get("object_id")
 
-    game_state = player_states[session_id]
-    game_data = player_game.get(session_id)
+    game_state = game_sessions[session_id]
+    game_data = game_data_storage.get(session_id)
 
     result = delete_object(object_id, game_state, game_data)
     return JSONResponse(result)

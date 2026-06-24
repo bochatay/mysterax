@@ -30,8 +30,8 @@ class GameState:
         for input_id, input_data in input_data.items():
             self.inputs[input_id] = input_data["status"]
             
-    def has_item(self, item_id):
+    def has_object(self, item_id):
         return item_id in self.inventory
 
-    def set_bool(self, bool_id, status):
+    def set_boolean(self, bool_id, status):
         self.bools[bool_id] = status

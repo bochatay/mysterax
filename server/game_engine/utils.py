@@ -1,4 +1,4 @@
-def select_version(versions_dict, current_bools, current_inventory, current_inputs):
+def get_room_version(versions_dict, current_boolean_states, current_inventory_items, current_input_states):
     """
     Sélectionne une version selon les conditions :
     - priorité aux versions dont TOUTES les conditions sont remplies
@@ -21,20 +21,20 @@ def select_version(versions_dict, current_bools, current_inventory, current_inpu
         # --- Conditions booléennes ---
         bool_conditions = conditions.get("requires_bools", {})
         bools_ok = all(
-            current_bools.get(bool_id) == required_state
+            current_boolean_states.get(bool_id) == required_state
             for bool_id, required_state in bool_conditions.items()
         )
 
         # --- Conditions objets ---
         required_objects = conditions.get("requires_objects", {})
         objects_ok = all(
-            (obj in current_inventory) == required_state
+            (obj in current_inventory_items) == required_state
             for obj, required_state in required_objects.items()
         )
         '''
         required_objects = conditions.get("requires_objects", [])
         objects_ok = all(
-            obj in current_inventory
+            obj in current_inventory_items
             for obj in required_objects
         )
         '''
@@ -42,7 +42,7 @@ def select_version(versions_dict, current_bools, current_inventory, current_inpu
         # --- Conditions input ---
         required_inputs = conditions.get("requires_inputs", {})
         inputs_ok = all(
-            current_inputs.get(input_id) == required_state
+            current_input_states.get(input_id) == required_state
             for input_id, required_state in required_inputs.items()
         )
 
