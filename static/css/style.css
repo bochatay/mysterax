@@ -65,7 +65,7 @@ body {
     /*margin-left: auto;
     margin-right: auto;*/
     cursor: pointer;
-    z-index: 100; /* Assurer que l'inventaire reste au-dessus des autres éléments */
+    z-index: 1001; /* Assurer que l'inventaire reste au-dessus des autres éléments, y compris de l'overlay */
 }
 
 #inventory h3 {
