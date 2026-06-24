@@ -87,6 +87,14 @@ function renderZones(zones, bools, gameDimensions) {
             const scaleX = gameDimensions.width / 968;  // Ratio par rapport à la largeur de référence
             const scaleY = gameDimensions.height / 752; // Ratio par rapport à la hauteur de référence
             
+            // Pour débogage
+            console.log(`Zone ${z.id}:`, {
+                originalCoords: z.coords,
+                scaleX,
+                scaleY,
+                adjustedCoords: [x1 * scaleX, y1 * scaleY, w * scaleX, h * scaleY]
+            });
+            
             // Appliquer les ratios aux coordonnées
             x1 = x1 * scaleX;
             y1 = y1 * scaleY;
