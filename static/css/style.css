@@ -107,10 +107,17 @@ body {
 
 /* Ajuster la taille des images d'objets dans l'inventaire */
 #inventory-list .inventory-item-image {
-    width: 32px; /* Taille standard pour les objets de l'inventaire */
-    height: 32px;
+    width: 60px; /* Taille 60x60 px comme demandé */
+    height: 60px;
     object-fit: contain;
     margin-right: 5px;
+}
+
+/* Ajuster le layout des items de l'inventaire pour placer l'icône de suppression à droite */
+#inventory-list .inventory-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
 }
 
 #inventory h3 {
