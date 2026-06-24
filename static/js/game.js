@@ -141,7 +141,7 @@ function renderZones(zones, bools, gameDimensions) {
 // Suppression des zones cliquables
 // -------------------------------------------------------------
 function clearZones() {
-    document.querySelectorAll(".zone stdClass").forEach(z => z.remove());
+    document.querySelectorAll(".zone").forEach(z => z.remove());
 }
 
 // -------------------------------------------------------------
