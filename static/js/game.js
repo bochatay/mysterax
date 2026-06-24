@@ -40,6 +40,40 @@ function updateGameDimensions(dimensions) {
 }
 
 // -------------------------------------------------------------
+// Affichage général
+// -------------------------------------------------------------
+function updateView(state) {
+    const img = document.getElementById("room-image");
+    img.src = `${mediaUrl}/rooms/` + state.image;
+
+    const gameOverlay = document.getElementById('game-overlay');
+    gameOverlay.classList.add("hidden");
+    const inputContainer = document.getElementById('input-container');
+    inputContainer.classList.add('hidden');
+
+    // Mettre à jour les dimensions du jeu si elles sont présentes
+    if (state.game && state.game.dimensions) {
+        updateGameDimensions(state.game.dimensions);
+    }
+
+    console.log("Mise à jour de la vue avec dimensions du jeu:", state.game && state.game.dimensions);
+    console.log("Zones à afficher:", state.zones);
+    
+    clearZones();
+    renderZones(state.zones, state.bools, state.game && state.game.dimensions);
+    updateInventory(state.inventory);
+    if (state.phrases && state.phrases.length > 0) {
+        currentPhrases = state.phrases;
+        currentPhraseIndex = 0;
+        showMessage(currentPhrases[0]["message"],"phrase",0,( currentPhrases.length == 1) ? "✖" : "⇒",currentPhrases[0]["image"]);
+
+    } else {
+        currentPhrases = null;
+        currentPhraseIndex = 0;
+    }
+}
+
+// -------------------------------------------------------------
 // Affichage des zones cliquables
 // -------------------------------------------------------------
 function renderZones(zones, bools, gameDimensions) {
@@ -107,7 +141,7 @@ function renderZones(zones, bools, gameDimensions) {
 // Suppression des zones cliquables
 // -------------------------------------------------------------
 function clearZones() {
-    document.querySelectorAll(".zone").forEach(z => z.remove());
+    document.querySelectorAll(".zone stdClass").forEach(z => z.remove());
 }
 
 // -------------------------------------------------------------
