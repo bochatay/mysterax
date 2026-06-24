@@ -60,7 +60,7 @@ body {
 #inventory {
     position: absolute;
     background: rgba(0, 0, 0, 0.6); /* Même fond que le timer */
-    padding: 5px; /* Réduire encore le padding pour rétrécir le bloc */
+    padding: 10px 15px; /* Même padding que le timer pour l'espace entre les bords et le texte */
     border: none; /* Pas de bordure comme le timer */
     border-radius: 5px; /* Mêmes coins arrondis que le timer */
     width: 130px; /* Élargir un peu pour faire de la place pour la flèche */
