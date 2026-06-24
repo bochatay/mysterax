@@ -57,7 +57,7 @@ function updateView(state) {
     }
 
     clearZones();
-    renderZones(state.zones, state.bools);
+    renderZones(state.zones, state.bools, state.game && state.game.dimensions);
     updateInventory(state.inventory);
     if (state.phrases && state.phrases.length > 0) {
         currentPhrases = state.phrases;
@@ -73,14 +73,26 @@ function updateView(state) {
 // -------------------------------------------------------------
 // Affichage des zones cliquables
 // -------------------------------------------------------------
-function renderZones(zones, bools) {
+function renderZones(zones, bools, gameDimensions) {
     const container = document.getElementById("room-container");
 
     zones.forEach(z => {
         const div = document.createElement("div");
         div.className = "zone";
 
-        const [x1, y1, w, h] = z.coords;
+        // Adapter les coordonnées si les dimensions du jeu sont spécifiées
+        let [x1, y1, w, h] = z.coords;
+        if (gameDimensions && gameDimensions.width && gameDimensions.height) {
+            // Calculer les ratios de redimensionnement
+            const scaleX = gameDimensions.width / 968;  // Ratio par rapport à la largeur de référence
+            const scaleY = gameDimensions.height / 752; // Ratio par rapport à la hauteur de référence
+            
+            // Appliquer les ratios aux coordonnées
+            x1 = x1 * scaleX;
+            y1 = y1 * scaleY;
+            w = w * scaleX;
+            h = h * scaleY;
+        }
 
         div.style.left = x1 + "px";
         div.style.top = y1 + "px";
