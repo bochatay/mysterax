@@ -56,6 +56,9 @@ function updateView(state) {
         updateGameDimensions(state.game.dimensions);
     }
 
+    console.log("Mise à jour de la vue avec dimensions du jeu:", state.game && state.game.dimensions);
+    console.log("Zones à afficher:", state.zones);
+    
     clearZones();
     renderZones(state.zones, state.bools, state.game && state.game.dimensions);
     updateInventory(state.inventory);
