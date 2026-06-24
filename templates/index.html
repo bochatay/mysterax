@@ -16,14 +16,16 @@
     <div id="room-container">
         <img id="room-image" src="" alt="Pièce actuelle">
         <div id="game-overlay" class="hidden"></div>
-    </div>
-
-    <div id="inventory">
-        <div style="display: flex; align-items: center;">
-            <h3 style="margin: 0;">Inventaire</h3>
-            <span id="inventory-toggle"></span>
+        <!-- Timer -->
+        <div id="timer">00:00</div>
+        <!-- Inventory -->
+        <div id="inventory">
+            <div style="display: flex; align-items: center;">
+                <h3 style="margin: 0;">Inventaire</h3>
+                <span id="inventory-toggle"></span>
+            </div>
+            <div id="inventory-list"></div>
         </div>
-        <div id="inventory-list"></div>
     </div>
 
     <!-- Overlay énigme -->
@@ -42,9 +44,7 @@
         <div id="icone_message">X</div>
     </div>
 
-    <!-- Timer -->
-    <div id="timer">00:00</div>
-
+    
 </div>
 
 <div id="image-container" class="hidden">
