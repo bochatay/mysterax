@@ -23,6 +23,23 @@ function loadState() {
 }
 
 // -------------------------------------------------------------
+// Mettre à jour les dimensions de la zone de jeu
+// -------------------------------------------------------------
+function updateGameDimensions(dimensions) {
+    const roomContainer = document.getElementById('room-container');
+    const gameContainer = document.getElementById('game-container');
+    
+    if (dimensions && dimensions.width && dimensions.height) {
+        // Mettre à jour le conteneur de la pièce avec les dimensions du jeu
+        roomContainer.style.width = dimensions.width + 'px';
+        roomContainer.style.height = dimensions.height + 'px';
+        
+        // Mettre à jour le conteneur principal si nécessaire
+        gameContainer.style.width = dimensions.width + 'px';
+    }
+}
+
+// -------------------------------------------------------------
 // Affichage général
 // -------------------------------------------------------------
 function updateView(state) {
@@ -33,6 +50,11 @@ function updateView(state) {
     gameOverlay.classList.add("hidden");
     const inputContainer = document.getElementById('input-container');
     inputContainer.classList.add('hidden');
+
+    // Mettre à jour les dimensions du jeu si elles sont présentes
+    if (state.game && state.game.dimensions) {
+        updateGameDimensions(state.game.dimensions);
+    }
 
     clearZones();
     renderZones(state.zones, state.bools);
