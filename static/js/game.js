@@ -23,23 +23,6 @@ function loadState() {
 }
 
 // -------------------------------------------------------------
-// Mettre à jour les dimensions de la zone de jeu
-// -------------------------------------------------------------
-function updateGameDimensions(dimensions) {
-    const roomContainer = document.getElementById('room-container');
-    const gameContainer = document.getElementById('game-container');
-    
-    if (dimensions && dimensions.width && dimensions.height) {
-        // Mettre à jour le conteneur de la pièce avec les dimensions du jeu
-        roomContainer.style.width = dimensions.width + 'px';
-        roomContainer.style.height = dimensions.height + 'px';
-        
-        // Mettre à jour le conteneur principal si nécessaire
-        gameContainer.style.width = dimensions.width + 'px';
-    }
-}
-
-// -------------------------------------------------------------
 // Affichage général
 // -------------------------------------------------------------
 function updateView(state) {
@@ -70,6 +53,41 @@ function updateView(state) {
     } else {
         currentPhrases = null;
         currentPhraseIndex = 0;
+    }
+}
+
+// -------------------------------------------------------------
+// Mettre à jour les dimensions de la zone de jeu
+// -------------------------------------------------------------
+function updateGameDimensions(dimensions) {
+    const roomContainer = document.getElementById('room-container');
+    const gameContainer = document.getElementById('game-container');
+    
+    if (dimensions && dimensions.width && dimensions.height) {
+        // Mettre à jour le conteneur de la pièce avec les dimensions du jeu
+        roomContainer.style.width = dimensions.width + 'px';
+        roomContainer.style.height = dimensions.height + 'px';
+        
+        // Mettre à jour le conteneur principal si nécessaire
+        gameContainer.style.width = dimensions.width + 'px';
+        gameContainer.style.height = dimensions.height + 'px';
+    }
+}
+
+// -------------------------------------------------------------
+// Mettre à jour les dimensions de la zone de jeu
+// -------------------------------------------------------------
+function updateGameDimensions(dimensions) {
+    const roomContainer = document.getElementById('room-container');
+    const gameContainer = document.getElementById('game-container');
+    
+    if (dimensions && dimensions.width && dimensions.height) {
+        // Mettre à jour le conteneur de la pièce avec les dimensions du jeu
+        roomContainer.style.width = dimensions.width + 'px';
+        roomContainer.style.height = dimensions.height + 'px';
+        
+        // Mettre à jour le conteneur principal si nécessaire
+        gameContainer.style.width = dimensions.width + 'px';
     }
 }
 
