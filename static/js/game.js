@@ -78,6 +78,7 @@ function updateView(state) {
 // -------------------------------------------------------------
 function renderZones(zones, bools, gameDimensions) {
     const container = document.getElementById("room-container");
+    const roomImage = document.getElementById("room-image");
 
     zones.forEach(z => {
         const div = document.createElement("div");
@@ -85,24 +86,35 @@ function renderZones(zones, bools, gameDimensions) {
 
         // Adapter les coordonnées si les dimensions du jeu sont spécifiées
         let [x1, y1, w, h] = z.coords;
-        if (gameDimensions && gameDimensions.width && gameDimensions.height) {
-            // Calculer les ratios de redimensionnement
-            const scaleX = gameDimensions.width / 968;  // Ratio par rapport à la largeur de référence
-            const scaleY = gameDimensions.height / 752; // Ratio par rapport à la hauteur de référence
+        if (gameDimensions && gameDimensions.width && gameDimensions.height && roomImage) {
+            // Obtenir les dimensions réelles de l'image affichée
+            const roomImageNaturalWidth = roomImage.naturalWidth;
+            const roomImageNaturalHeight = roomImage.naturalHeight;
             
-            // Pour débogage
-            console.log(`Zone ${z.id}:`, {
-                originalCoords: z.coords,
-                scaleX,
-                scaleY,
-                adjustedCoords: [x1 * scaleX, y1 * scaleY, w * scaleX, h * scaleY]
-            });
-            
-            // Appliquer les ratios aux coordonnées
-            x1 = x1 * scaleX;
-            y1 = y1 * scaleY;
-            w = w * scaleX;
-            h = h * scaleY;
+            // Vérifier que les dimensions sont valides
+            if (roomImageNaturalWidth > 0 && roomImageNaturalHeight > 0) {
+                // Calculer les ratios de redimensionnement
+                const scaleX = roomImageNaturalWidth / gameDimensions.width;
+                const scaleY = roomImageNaturalHeight / gameDimensions.height;
+                
+                // Pour débogage
+                console.log(`Zone ${z.id}:`, {
+                    originalCoords: z.coords,
+                    gameWidth: gameDimensions.width,
+                    gameHeight: gameDimensions.height,
+                    imageWidth: roomImageNaturalWidth,
+                    imageHeight: roomImageNaturalHeight,
+                    scaleX,
+                    scaleY,
+                    adjustedCoords: [x1 * scaleX, y1 * scaleY, w * scaleX, h * scaleY]
+                });
+                
+                // Appliquer les ratios aux coordonnées
+                x1 = x1 * scaleX;
+                y1 = y1 * scaleY;
+                w = w * scaleX;
+                h = h * scaleY;
+            }
         }
 
         div.style.left = x1 + "px";
