@@ -27,38 +27,97 @@ function loadState() {
 // -------------------------------------------------------------
 function updateView(state) {
     const img = document.getElementById("room-image");
-    img.src = `${mediaUrl}/rooms/` + state.image;
-
-    const gameOverlay = document.getElementById('game-overlay');
-    gameOverlay.classList.add("hidden");
-    const inputContainer = document.getElementById('input-container');
-    inputContainer.classList.add('hidden');
-
+    
     clearZones();
-    renderZones(state.zones, state.bools);
-    updateInventory(state.inventory);
-    if (state.phrases && state.phrases.length > 0) {
-        currentPhrases = state.phrases;
-        currentPhraseIndex = 0;
-        showMessage(currentPhrases[0]["message"],"phrase",0,( currentPhrases.length == 1) ? "✖" : "⇒",currentPhrases[0]["image"]);
+    
+    // Charger l'image et ensuite afficher les zones
+    img.onload = function() {
+        // Une fois l'image chargée, mettre à jour les dimensions avec les dimensions réelles
+        if (state.game && state.game.dimensions) {
+            // Utiliser les dimensions réelles de l'image pour ajuster le conteneur
+            updateGameDimensions({
+                width: img.naturalWidth,
+                height: img.naturalHeight
+            });
+        }
+        
+        // Afficher les zones avec les bonnes dimensions
+        renderZones(state.zones, state.bools, state.game && state.game.dimensions);
+        updateInventory(state.inventory);
+        if (state.phrases && state.phrases.length > 0) {
+            currentPhrases = state.phrases;
+            currentPhraseIndex = 0;
+            showMessage(currentPhrases[0]["message"],"phrase",0,( currentPhrases.length == 1) ? "✖" : "⇒",currentPhrases[0]["image"]);
 
-    } else {
-        currentPhrases = null;
-        currentPhraseIndex = 0;
+        } else {
+            currentPhrases = null;
+            currentPhraseIndex = 0;
+        }
+    };
+    
+    // Définir la source de l'image après avoir configuré l'event listener
+    img.src = `${mediaUrl}/rooms/` + state.image;
+}
+// Mettre à jour les dimensions de la zone de jeu
+// -------------------------------------------------------------
+function updateGameDimensions(dimensions) {
+    const roomContainer = document.getElementById('room-container');
+    const gameContainer = document.getElementById('game-container');
+    
+    if (dimensions && dimensions.width && dimensions.height) {
+        // Mettre à jour le conteneur de la pièce avec les dimensions du jeu
+        roomContainer.style.width = dimensions.width + 'px';
+        roomContainer.style.height = dimensions.height + 'px';
+        
+        // Mettre à jour le conteneur principal si nécessaire
+        gameContainer.style.width = dimensions.width + 'px';
+        gameContainer.style.height = dimensions.height + 'px';
     }
 }
 
 // -------------------------------------------------------------
 // Affichage des zones cliquables
 // -------------------------------------------------------------
-function renderZones(zones, bools) {
+function renderZones(zones, bools, gameDimensions) {
     const container = document.getElementById("room-container");
+    const roomImage = document.getElementById("room-image");
 
     zones.forEach(z => {
         const div = document.createElement("div");
         div.className = "zone";
 
-        const [x1, y1, w, h] = z.coords;
+        // Adapter les coordonnées si les dimensions du jeu sont spécifiées
+        let [x1, y1, w, h] = z.coords;
+        if (gameDimensions && gameDimensions.width && gameDimensions.height && roomImage) {
+            // Obtenir les dimensions réelles de l'image affichée
+            const roomImageNaturalWidth = roomImage.naturalWidth;
+            const roomImageNaturalHeight = roomImage.naturalHeight;
+            
+            // Vérifier que les dimensions sont valides
+            if (roomImageNaturalWidth > 0 && roomImageNaturalHeight > 0) {
+                // Calculer les ratios de redimensionnement
+                const scaleX = roomImageNaturalWidth / gameDimensions.width;
+                const scaleY = roomImageNaturalHeight / gameDimensions.height;
+                
+                // Pour débogage
+                // console.log(`Zone ${z.id}:`, {
+                //     originalCoords: z.coords,
+                //     gameWidth: gameDimensions.width,
+                //     gameHeight: gameDimensions.height,
+                //     imageWidth: roomImageNaturalWidth,
+                //     imageHeight: roomImageNaturalHeight,
+                //     scaleX,
+                //     scaleY,
+                //     adjustedCoords: [x1 * scaleX, y1 * scaleY, w * scaleX, h * scaleY]
+                // });
+                
+                // Appliquer les ratios aux coordonnées
+                x1 = x1 * scaleX;
+                y1 = y1 * scaleY;
+                w = w * scaleX;
+                h = h * scaleY;
+            }
+        }
 
         div.style.left = x1 + "px";
         div.style.top = y1 + "px";

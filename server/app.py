@@ -120,7 +120,12 @@ async def get_state(request: Request):
             for bool_id, status in game_state.bools.items()
         },
         "zones": current_room_data.get("zones", []),
-        "phrases": phrases
+        "phrases": phrases,
+        "game": {
+            "name": game_data.config.get("name", "Jeu sans nom"),
+            "start_room": game_data.start_room,
+            "dimensions": game_data.config.get("dimensions", None)
+        }
     }
 
 @app.post("/api/testEnigme")
