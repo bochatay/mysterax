@@ -28,9 +28,6 @@ function loadState() {
 function updateView(state) {
     const img = document.getElementById("room-image");
     
-    console.log("Mise à jour de la vue avec dimensions du jeu:", state.game && state.game.dimensions);
-    console.log("Zones à afficher:", state.zones);
-    
     clearZones();
     
     // Charger l'image et ensuite afficher les zones
@@ -61,8 +58,6 @@ function updateView(state) {
     // Définir la source de l'image après avoir configuré l'event listener
     img.src = `${mediaUrl}/rooms/` + state.image;
 }
-
-// -------------------------------------------------------------
 // Mettre à jour les dimensions de la zone de jeu
 // -------------------------------------------------------------
 function updateGameDimensions(dimensions) {
@@ -105,16 +100,16 @@ function renderZones(zones, bools, gameDimensions) {
                 const scaleY = roomImageNaturalHeight / gameDimensions.height;
                 
                 // Pour débogage
-                console.log(`Zone ${z.id}:`, {
-                    originalCoords: z.coords,
-                    gameWidth: gameDimensions.width,
-                    gameHeight: gameDimensions.height,
-                    imageWidth: roomImageNaturalWidth,
-                    imageHeight: roomImageNaturalHeight,
-                    scaleX,
-                    scaleY,
-                    adjustedCoords: [x1 * scaleX, y1 * scaleY, w * scaleX, h * scaleY]
-                });
+                // console.log(`Zone ${z.id}:`, {
+                //     originalCoords: z.coords,
+                //     gameWidth: gameDimensions.width,
+                //     gameHeight: gameDimensions.height,
+                //     imageWidth: roomImageNaturalWidth,
+                //     imageHeight: roomImageNaturalHeight,
+                //     scaleX,
+                //     scaleY,
+                //     adjustedCoords: [x1 * scaleX, y1 * scaleY, w * scaleX, h * scaleY]
+                // });
                 
                 // Appliquer les ratios aux coordonnées
                 x1 = x1 * scaleX;
