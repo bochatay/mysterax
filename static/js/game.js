@@ -27,33 +27,39 @@ function loadState() {
 // -------------------------------------------------------------
 function updateView(state) {
     const img = document.getElementById("room-image");
-    img.src = `${mediaUrl}/rooms/` + state.image;
-
-    const gameOverlay = document.getElementById('game-overlay');
-    gameOverlay.classList.add("hidden");
-    const inputContainer = document.getElementById('input-container');
-    inputContainer.classList.add('hidden');
-
-    // Mettre à jour les dimensions du jeu si elles sont présentes
-    if (state.game && state.game.dimensions) {
-        updateGameDimensions(state.game.dimensions);
-    }
-
+    
     console.log("Mise à jour de la vue avec dimensions du jeu:", state.game && state.game.dimensions);
     console.log("Zones à afficher:", state.zones);
     
     clearZones();
-    renderZones(state.zones, state.bools, state.game && state.game.dimensions);
-    updateInventory(state.inventory);
-    if (state.phrases && state.phrases.length > 0) {
-        currentPhrases = state.phrases;
-        currentPhraseIndex = 0;
-        showMessage(currentPhrases[0]["message"],"phrase",0,( currentPhrases.length == 1) ? "✖" : "⇒",currentPhrases[0]["image"]);
+    
+    // Charger l'image et ensuite afficher les zones
+    img.onload = function() {
+        // Une fois l'image chargée, mettre à jour les dimensions avec les dimensions réelles
+        if (state.game && state.game.dimensions) {
+            // Utiliser les dimensions réelles de l'image pour ajuster le conteneur
+            updateGameDimensions({
+                width: img.naturalWidth,
+                height: img.naturalHeight
+            });
+        }
+        
+        // Afficher les zones avec les bonnes dimensions
+        renderZones(state.zones, state.bools, state.game && state.game.dimensions);
+        updateInventory(state.inventory);
+        if (state.phrases && state.phrases.length > 0) {
+            currentPhrases = state.phrases;
+            currentPhraseIndex = 0;
+            showMessage(currentPhrases[0]["message"],"phrase",0,( currentPhrases.length == 1) ? "✖" : "⇒",currentPhrases[0]["image"]);
 
-    } else {
-        currentPhrases = null;
-        currentPhraseIndex = 0;
-    }
+        } else {
+            currentPhrases = null;
+            currentPhraseIndex = 0;
+        }
+    };
+    
+    // Définir la source de l'image après avoir configuré l'event listener
+    img.src = `${mediaUrl}/rooms/` + state.image;
 }
 
 // -------------------------------------------------------------
@@ -71,23 +77,6 @@ function updateGameDimensions(dimensions) {
         // Mettre à jour le conteneur principal si nécessaire
         gameContainer.style.width = dimensions.width + 'px';
         gameContainer.style.height = dimensions.height + 'px';
-    }
-}
-
-// -------------------------------------------------------------
-// Mettre à jour les dimensions de la zone de jeu
-// -------------------------------------------------------------
-function updateGameDimensions(dimensions) {
-    const roomContainer = document.getElementById('room-container');
-    const gameContainer = document.getElementById('game-container');
-    
-    if (dimensions && dimensions.width && dimensions.height) {
-        // Mettre à jour le conteneur de la pièce avec les dimensions du jeu
-        roomContainer.style.width = dimensions.width + 'px';
-        roomContainer.style.height = dimensions.height + 'px';
-        
-        // Mettre à jour le conteneur principal si nécessaire
-        gameContainer.style.width = dimensions.width + 'px';
     }
 }
 
